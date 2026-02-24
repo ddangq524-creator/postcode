@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>주소검색</title>
+
+<script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+</head>
+<body>
+
+<h3>주소 검색</h3>
+
+<button onclick="execDaumPostcode()">주소 검색 버튼</button>
+
+<br><br>
+
+<input type="text" id="address" placeholder="주소가 여기에 표시됩니다" style="width:300px; height:30px;">
+
+<script>
+
+function execDaumPostcode() {
+
+    new kakao.Postcode({
+
+        oncomplete: function(data) {
+
+            document.getElementById("address").value = data.address;
+
+        }
+
+    }).open();
+
+}
+
+</script>
+
+</body>
+</html>
