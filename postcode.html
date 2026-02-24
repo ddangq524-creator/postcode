@@ -9,9 +9,10 @@
 <style>
 
 body{
-font-family: sans-serif;
+font-family:sans-serif;
 padding:10px;
 margin:0;
+width:300px;
 }
 
 .row{
@@ -25,11 +26,10 @@ height:30px;
 font-size:14px;
 padding:3px 6px;
 border:1px solid #ccc;
+box-sizing:border-box;
 }
 
-#postcode{
-width:90px;
-}
+#postcode{ width:90px; }
 
 #searchBtn{
 width:140px;
@@ -42,22 +42,62 @@ cursor:pointer;
 }
 
 #address{
-width:238px;
+width:100%;
 margin-bottom:8px;
 }
 
 #detail{
-width:150px;
+flex:1;
 }
 
 #copyBtn{
-width:80px;
+width:60px;
 height:30px;
 background:#333;
 color:white;
 border:none;
 font-size:13px;
 cursor:pointer;
+}
+
+
+/* 확인창 */
+
+#confirmBox{
+
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.3);
+
+justify-content:center;
+align-items:center;
+
+}
+
+#confirmInner{
+
+background:white;
+padding:15px;
+border-radius:5px;
+text-align:center;
+width:200px;
+
+}
+
+#confirmBtn{
+
+margin-top:10px;
+width:100%;
+height:30px;
+border:none;
+background:#333;
+color:white;
+cursor:pointer;
+
 }
 
 </style>
@@ -69,7 +109,7 @@ cursor:pointer;
 
 <div class="row">
 
-<input type="text" id="postcode" placeholder="우편번호" readonly>
+<input id="postcode" placeholder="우편번호" readonly>
 
 <button id="searchBtn" onclick="execDaumPostcode()">우편번호 찾기</button>
 
@@ -77,15 +117,31 @@ cursor:pointer;
 
 
 
-<input type="text" id="address" placeholder="기본주소" readonly>
+<input id="address" placeholder="기본주소" readonly>
 
 
 
 <div class="row">
 
-<input type="text" id="detail" placeholder="상세주소">
+<input id="detail" placeholder="상세주소">
 
 <button id="copyBtn" onclick="copyAddress()">복사</button>
+
+</div>
+
+
+
+<!-- 확인창 -->
+
+<div id="confirmBox">
+
+<div id="confirmInner">
+
+복사 되어있습니다.
+
+<button id="confirmBtn" onclick="closeAll()">확인</button>
+
+</div>
 
 </div>
 
@@ -100,11 +156,11 @@ new kakao.Postcode({
 
 oncomplete:function(data){
 
-document.getElementById("postcode").value=data.zonecode;
+postcode.value=data.zonecode;
 
-document.getElementById("address").value=data.address;
+address.value=data.address;
 
-document.getElementById("detail").focus();
+detail.focus();
 
 }
 
@@ -116,36 +172,37 @@ document.getElementById("detail").focus();
 
 function copyAddress(){
 
-var postcode=document.getElementById("postcode").value;
+var full="("+postcode.value+") "+address.value+" "+detail.value;
 
-var address=document.getElementById("address").value;
+navigator.clipboard.writeText(full);
 
-var detail=document.getElementById("detail").value;
-
-var full="("+postcode+") "+address+" "+detail;
-
-
-navigator.clipboard.writeText(full).then(function(){
-
-window.close();
-
-});
+confirmBox.style.display="flex";
 
 }
 
 
 
-// 정확히 컴팩트한 팝업 크기
+// 확인 클릭 → 전체 닫기
+
+function closeAll(){
+
+window.close();
+
+}
+
+
+
+// 팝업 크기
 
 window.onload=function(){
 
-window.resizeTo(320,160);
+window.resizeTo(320,180);
 
 window.moveTo(
 
 (screen.width-320)/2,
 
-(screen.height-160)/2
+(screen.height-180)/2
 
 );
 
