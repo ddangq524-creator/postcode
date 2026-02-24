@@ -8,41 +8,56 @@
 
 <style>
 
-body {
-    font-family: sans-serif;
-    padding: 20px;
+body{
+font-family: sans-serif;
+padding:10px;
+margin:0;
 }
 
-input {
-    height: 35px;
-    margin-bottom: 10px;
-    padding: 5px;
-    font-size: 14px;
+.row{
+display:flex;
+gap:8px;
+margin-bottom:8px;
 }
 
-#postcode {
-    width: 100px;
+input{
+height:30px;
+font-size:14px;
+padding:3px 6px;
+border:1px solid #ccc;
 }
 
-#address {
-    width: 300px;
+#postcode{
+width:90px;
 }
 
-#detail {
-    width: 300px;
+#searchBtn{
+width:140px;
+height:30px;
+background:#555;
+color:white;
+border:none;
+font-size:14px;
+cursor:pointer;
 }
 
-button {
-    height: 40px;
-    padding: 0 15px;
-    font-size: 14px;
-    cursor: pointer;
+#address{
+width:238px;
+margin-bottom:8px;
 }
 
-#copyBtn {
-    background-color: #333;
-    color: white;
-    border: none;
+#detail{
+width:150px;
+}
+
+#copyBtn{
+width:80px;
+height:30px;
+background:#333;
+color:white;
+border:none;
+font-size:13px;
+cursor:pointer;
 }
 
 </style>
@@ -51,104 +66,93 @@ button {
 <body>
 
 
-<!-- 우편번호 + 검색버튼 -->
+
+<div class="row">
 
 <input type="text" id="postcode" placeholder="우편번호" readonly>
 
-<button onclick="execDaumPostcode()">우편번호 찾기</button>
+<button id="searchBtn" onclick="execDaumPostcode()">우편번호 찾기</button>
 
-<br>
+</div>
 
-<!-- 기본주소 -->
+
 
 <input type="text" id="address" placeholder="기본주소" readonly>
 
-<br>
 
-<!-- 상세주소 -->
 
-<input type="text" id="detail" placeholder="상세주소 입력">
+<div class="row">
 
-<br>
+<input type="text" id="detail" placeholder="상세주소">
 
-<!-- 복사버튼 -->
+<button id="copyBtn" onclick="copyAddress()">복사</button>
 
-<button id="copyBtn" onclick="copyAddress()">전체주소 복사</button>
+</div>
 
 
 
 <script>
 
 
-// 주소검색
+function execDaumPostcode(){
 
-function execDaumPostcode() {
+new kakao.Postcode({
 
-    new kakao.Postcode({
+oncomplete:function(data){
 
-        oncomplete: function(data) {
+document.getElementById("postcode").value=data.zonecode;
 
-            document.getElementById("postcode").value = data.zonecode;
+document.getElementById("address").value=data.address;
 
-            document.getElementById("address").value = data.address;
+document.getElementById("detail").focus();
 
-            document.getElementById("detail").focus();
+}
 
-        }
-
-    }).open({
-
-        popupName: 'postcodePopup'
-
-    });
+}).open();
 
 }
 
 
 
-// 복사 기능
+function copyAddress(){
 
-function copyAddress() {
+var postcode=document.getElementById("postcode").value;
 
-    var postcode = document.getElementById("postcode").value;
+var address=document.getElementById("address").value;
 
-    var address = document.getElementById("address").value;
+var detail=document.getElementById("detail").value;
 
-    var detail = document.getElementById("detail").value;
-
-
-    var fullAddress = "(" + postcode + ") " + address + " " + detail;
+var full="("+postcode+") "+address+" "+detail;
 
 
-    navigator.clipboard.writeText(fullAddress);
+navigator.clipboard.writeText(full).then(function(){
 
+window.close();
 
-    alert("복사되었습니다:\n" + fullAddress);
+});
 
 }
 
 
 
-// 팝업 최소화 열기용 함수 (노션에서 이 링크 사용)
+// 정확히 컴팩트한 팝업 크기
 
-function openPopup() {
+window.onload=function(){
 
-window.open(
+window.resizeTo(320,160);
 
-    window.location.href,
+window.moveTo(
 
-    "pop",
+(screen.width-320)/2,
 
-    "width=500,height=600,toolbar=no,menubar=no,scrollbars=yes,resizable=no,status=no,location=no"
+(screen.height-160)/2
 
 );
 
-}
-
+};
 
 
 </script>
-
 
 
 </body>
